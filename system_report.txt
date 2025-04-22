@@ -1,0 +1,41 @@
+System Information Report
+
+Machine code: 5815C60A-703E-565F-A142-7C1CAD50414B
+
+Number of CPU cores: 10
+Number of logical CPUs: 10
+CPU usage rate: 15.8
+Total memory (GB): 64.0
+Used memory (GB): 30.77
+Memory usage rate: 54.9
+Disk information:
+  - /dev/disk3s1s1 - Total capacity (GB): 926.35, Used capacity (GB): 10.47, Usage rate: 3.7%
+  - /dev/disk3s6 - Total capacity (GB): 926.35, Used capacity (GB): 0.0, Usage rate: 0.0%
+  - /dev/disk3s2 - Total capacity (GB): 926.35, Used capacity (GB): 6.66, Usage rate: 2.4%
+  - /dev/disk3s4 - Total capacity (GB): 926.35, Used capacity (GB): 0.0, Usage rate: 0.0%
+  - /dev/disk1s2 - Total capacity (GB): 0.49, Used capacity (GB): 0.01, Usage rate: 1.2%
+  - /dev/disk1s1 - Total capacity (GB): 0.49, Used capacity (GB): 0.01, Usage rate: 1.1%
+  - /dev/disk1s3 - Total capacity (GB): 0.49, Used capacity (GB): 0.0, Usage rate: 0.8%
+  - /dev/disk3s5 - Total capacity (GB): 926.35, Used capacity (GB): 638.34, Usage rate: 70.3%
+
+Installed Device Information
+
+ - Hardware:
+ - Hardware Overview:
+ - Model Name: MacBook Pro
+ - Model Identifier: MacBookPro18,2
+ - Model Number: Z14X000EECH/A
+ - Chip: Apple M1 Max
+ - Total Number of Cores: 10 (8 performance and 2 efficiency)
+ - Memory: 64 GB
+ - System Firmware Version: 11881.101.1
+ - OS Loader Version: 11881.101.1
+ - Serial Number (system): LXPMXM99X5
+ - Hardware UUID: 5815C60A-703E-565F-A142-7C1CAD50414B
+ - Provisioning UDID: 00006001-001861023A41801E
+ - Activation Lock Status: Enabled
+
+Local Network Information
+
+IP address: 198.18.0.1
+MAC address: 92:AC:B2:10:CD:3D

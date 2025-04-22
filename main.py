@@ -2,22 +2,29 @@ import csv
 import io
 
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
-
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.secret_key = 'your_unique_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spots.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///system_reports.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 db = SQLAlchemy(app)
 
 
-class SportsRecord(db.Model):
+class SystemReport(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    sport_name = db.Column(db.String(100), nullable=False)
-    athlete_name = db.Column(db.String(100), nullable=False)
-    event_date = db.Column(db.String(100), nullable=False)
+    machine_code = db.Column(db.String(100), nullable=False)
+    cpu_cores = db.Column(db.Integer, nullable=False)
+    logical_cpus = db.Column(db.Integer, nullable=False)
+    cpu_usage = db.Column(db.String(20), nullable=False)
+    total_memory = db.Column(db.String(20), nullable=False)
+    used_memory = db.Column(db.String(20), nullable=False)
+    memory_usage = db.Column(db.String(20), nullable=False)
+    disk_info = db.Column(db.Text, nullable=False)
+    device_info = db.Column(db.Text, nullable=False)
+    ip_address = db.Column(db.String(50), nullable=False)
+    mac_address = db.Column(db.String(50), nullable=False)
 
 
 @app.route('/')
@@ -25,169 +32,179 @@ def splash_home():
     return render_template('splash.html')
 
 
-# @app.route('/home', methods=['GET', 'POST'])
-# def home():
-#     return render_template('home.html')
-
-
-@app.route('/home', methods=['GET', 'POST'])
-def scenic_spots():
-    sport_name = request.args.get('sport_name')
-    athlete_name = request.form.get('athlete_name')
-    event_date = request.form.get('event_date')
+@app.route('/system_reports', methods=['GET', 'POST'])
+def system_reports():
+    machine_code = request.args.get('machine_code')
     # 构建查询条件
-    query = SportsRecord.query
-    if sport_name:
-        query = query.filter(SportsRecord.sport_name.like(f'%{sport_name}%'))
-    if athlete_name:
-        query = query.filter(SportsRecord.athlete_name.like(f'%{athlete_name}%'))
-    if event_date:
-        query = query.filter(SportsRecord.event_date.like(f'%{event_date}%'))
+    query = SystemReport.query
+    if machine_code:
+        query = query.filter(SystemReport.machine_code.like(f'%{machine_code}%'))
     sort_by = request.args.get('sort_by')
     sort_order = request.args.get('sort_order', 'asc')
     if sort_by:
         if sort_order == 'asc':
-            query = query.order_by(getattr(SportsRecord, sort_by).asc())
+            query = query.order_by(getattr(SystemReport, sort_by).asc())
         else:
-            query = query.order_by(getattr(SportsRecord, sort_by).desc())
+            query = query.order_by(getattr(SystemReport, sort_by).desc())
     if request.method == 'POST':
         action = request.form.get('action')
         if action == 'delete':
-            spot_id = request.form.get('spot_id')
-            spot = SportsRecord.query.get(spot_id)
-            if spot:
-                db.session.delete(spot)
+            report_id = request.form.get('report_id')
+            report = SystemReport.query.get(report_id)
+            if report:
+                db.session.delete(report)
                 db.session.commit()
-                flash('景区已成功删除')
+                flash('Report has been successfully deleted')
         elif action == 'sort':
-            query = SportsRecord.query.order_by(SportsRecord.sport_name)
-            spots = query.all()
-            return render_template('scenic_sport.html', spots=spots)
+            query = SystemReport.query.order_by(SystemReport.machine_code)
+            reports = query.all()
+            return render_template('system_reports.html', reports=reports)
         elif action == 'view_all':
-            spots = SportsRecord.query.all()
-            return render_template('scenic_sport.html', spots=spots)
+            reports = SystemReport.query.all()
+            return render_template('system_reports.html', reports=reports)
         elif action == 'edit':
-            return redirect(url_for('scenic_spots'))
-        return redirect(url_for('scenic_spots'))
-    spots = query.all()
-    return render_template('scenic_sport.html', spots=spots, sort_by=sort_by, sort_order=sort_order)
+            return redirect(url_for('system_reports'))
+        return redirect(url_for('system_reports'))
+    reports = query.all()
+    return render_template('system_reports.html', reports=reports, sort_by=sort_by, sort_order=sort_order)
 
 
-@app.route('/add_scenic_spot', methods=['GET', 'POST'])
-def add_scenic_spot():
+@app.route('/add_system_report', methods=['GET', 'POST'])
+def add_system_report():
     if request.method == 'POST':
-        new_sport_name = request.form.get('sport_name')
-        new_event_date = request.form.get('event_date')
-        new_athlete_name = request.form.get('athlete_name')
-        new_spot = SportsRecord(
-            sport_name=new_sport_name,
-            event_date=new_event_date,
-            athlete_name=new_athlete_name
+        new_machine_code = request.form.get('machine_code')
+        new_cpu_cores = request.form.get('cpu_cores')
+        new_logical_cpus = request.form.get('logical_cpus')
+        new_cpu_usage = request.form.get('cpu_usage')
+        new_total_memory = request.form.get('total_memory')
+        new_used_memory = request.form.get('used_memory')
+        new_memory_usage = request.form.get('memory_usage')
+        new_disk_info = request.form.get('disk_info')
+        new_device_info = request.form.get('device_info')
+        new_ip_address = request.form.get('ip_address')
+        new_mac_address = request.form.get('mac_address')
+
+        new_report = SystemReport(
+            machine_code=new_machine_code,
+            cpu_cores=new_cpu_cores,
+            logical_cpus=new_logical_cpus,
+            cpu_usage=new_cpu_usage,
+            total_memory=new_total_memory,
+            used_memory=new_used_memory,
+            memory_usage=new_memory_usage,
+            disk_info=new_disk_info,
+            device_info=new_device_info,
+            ip_address=new_ip_address,
+            mac_address=new_mac_address
         )
-        db.session.add(new_spot)
+        db.session.add(new_report)
         db.session.commit()
-        flash('景区已成功添加')
-        return redirect(url_for('scenic_spots'))
-    return render_template('add_scenic_spot.html')
+        flash('Report has been successfully added')
+        return redirect(url_for('system_reports'))
+    return render_template('add_system_report.html')
 
 
-@app.route('/edit/<int:spot_id>', methods=['GET', 'POST'])
-def edit(spot_id):
-    spot = SportsRecord.query.get(spot_id)
-    if not spot:
-        return jsonify({'message': '未找到该景区'}), 404
-    return render_template('edit_scenic_sport.html', spot=spot)
-
-
-@app.route('/edit_scenic_spot/<int:id>', methods=['GET', 'POST'])
-def edit_scenic_spot(id):
-    spot = SportsRecord.query.get_or_404(id)
+@app.route('/edit_system_report/<int:id>', methods=['GET', 'POST'])
+def edit_system_report(id):
+    report = SystemReport.query.get_or_404(id)
     if request.method == 'POST':
-        spot.sport_name = request.form['sport_name']
-        spot.event_date = request.form['event_date']
-        spot.athlete_name = request.form['athlete_name']
+        report.machine_code = request.form['machine_code']
+        report.cpu_cores = request.form['cpu_cores']
+        report.logical_cpus = request.form['logical_cpus']
+        report.cpu_usage = request.form['cpu_usage']
+        report.total_memory = request.form['total_memory']
+        report.used_memory = request.form['used_memory']
+        report.memory_usage = request.form['memory_usage']
+        report.disk_info = request.form['disk_info']
+        report.device_info = request.form['device_info']
+        report.ip_address = request.form['ip_address']
+        report.mac_address = request.form['mac_address']
         db.session.commit()
-        flash('景区已成功修改')
-        return redirect(url_for('scenic_spots'))
-    return render_template('edit_scenic_sport.html', spot=spot)
+        flash('Report has been successfully modified')
+        return redirect(url_for('system_reports'))
+    return render_template('edit_system_report.html', report=report)
 
 
-@app.route('/view_scenic_spot_details/<int:id>', methods=['GET'])
-def view_scenic_spot_details(id):
+@app.route('/view_system_report_details/<int:id>', methods=['GET'])
+def view_system_report_details(id):
     action = request.args.get('action')
     if action == 'add':
-        return render_template('add_scenic_spot.html')
-    spot = SportsRecord.query.get_or_404(id)
-    return render_template('scenic_sport_details.html', spot=spot)
+        return render_template('add_system_report.html')
+    report = SystemReport.query.get_or_404(id)
+    return render_template('system_report_details.html', report=report)
 
 
-@app.route('/get_scenic_spot/<int:id>', methods=['GET'])
-def get_scenic_spot(id):
-    spot = SportsRecord.query.get_or_404(id)
+@app.route('/get_system_report/<int:id>', methods=['GET'])
+def get_system_report(id):
+    report = SystemReport.query.get_or_404(id)
     return jsonify({
-        'sport_name': spot.sport_name,
-        'event_date': spot.event_date,
-        'athlete_name': spot.athlete_name
+        'machine_code': report.machine_code,
+        'cpu_cores': report.cpu_cores,
+        'logical_cpus': report.logical_cpus,
+        'cpu_usage': report.cpu_usage,
+        'total_memory': report.total_memory,
+        'used_memory': report.used_memory,
+        'memory_usage': report.memory_usage,
+        'disk_info': report.disk_info,
+        'device_info': report.device_info,
+        'ip_address': report.ip_address,
+        'mac_address': report.mac_address
     })
 
 
-@app.route('/search_scenic_spots', methods=['POST'])
-def search_scenic_spots():
-    sport_name = request.form.get('sport_name')
-    athlete_name = request.form.get('athlete_name')
-    event_date = request.form.get('event_date')
+@app.route('/search_system_reports', methods=['POST'])
+def search_system_reports():
+    machine_code = request.form.get('machine_code')
 
     # 构建查询条件
-    query = SportsRecord.query
-    if sport_name:
-        query = query.filter(SportsRecord.sport_name.like(f'%{sport_name}%'))
-    if athlete_name:
-        query = query.filter(SportsRecord.athlete_name.like(f'%{athlete_name}%'))
-    if event_date:
-        query = query.filter(SportsRecord.event_date.like(f'%{event_date}%'))
+    query = SystemReport.query
+    if machine_code:
+        query = query.filter(SystemReport.machine_code.like(f'%{machine_code}%'))
 
     # 执行查询
     results = query.all()
 
     # 将查询结果转换为字典列表
     results_list = [{
-        'id': spot.id,
-        'sport_name': spot.sport_name,
-        'event_date': spot.event_date,
-        'athlete_name': spot.athlete_name
-    } for spot in results]
+        'id': report.id,
+        'machine_code': report.machine_code,
+        'cpu_cores': report.cpu_cores,
+        'logical_cpus': report.logical_cpus,
+        'cpu_usage': report.cpu_usage,
+        'total_memory': report.total_memory,
+        'used_memory': report.used_memory,
+        'memory_usage': report.memory_usage,
+        'disk_info': report.disk_info,
+        'device_info': report.device_info,
+        'ip_address': report.ip_address,
+        'mac_address': report.mac_address
+    } for report in results]
 
     return jsonify(results_list)
 
 
 @app.route('/search_results', methods=['POST'])
 def search_results():
-    sport_name = request.form.get('sport_name')
-    athlete_name = request.form.get('athlete_name')
-    event_date = request.form.get('event_date')
+    machine_code = request.form.get('machine_code')
 
     # 构建查询条件
-    query = SportsRecord.query
-    if sport_name:
-        query = query.filter(SportsRecord.sport_name.like(f'%{sport_name}%'))
-    if athlete_name:
-        query = query.filter(SportsRecord.athlete_name.like(f'%{athlete_name}%'))
-    if event_date:
-        query = query.filter(SportsRecord.event_date.like(f'%{event_date}%'))
+    query = SystemReport.query
+    if machine_code:
+        query = query.filter(SystemReport.machine_code.like(f'%{machine_code}%'))
 
     # 执行查询
-    spots = query.all()
+    reports = query.all()
 
-    return render_template('scenic_sport.html', spots=spots, sort_by=None, sort_order=None)
+    return render_template('system_reports.html', reports=reports, sort_by=None, sort_order=None)
 
 
-@app.route('/download_scenic_spots')
-def download_scenic_spots():
-    # 从数据库中获取所有的景区信息
-    spots = SportsRecord.query.all()
-    print(f"Number of spots retrieved from database: {len(spots)}")  # 打印获取的数据数量
-    for spot in spots:
-        print(f"Spot: {spot}")  # 打印每个景区信息
+@app.route('/download_system_reports')
+def download_system_reports():
+    # 从数据库中获取所有的系统报告信息
+    reports = SystemReport.query.all()
+    print(f"Number of reports retrieved from database: {len(reports)}")  # 打印获取的数据数量
+    for report in reports:
+        print(f"Report: {report}")  # 打印每个系统报告信息
 
     # 创建一个 BytesIO 对象，用于存储 CSV 数据
     csv_buffer = io.BytesIO()
@@ -196,14 +213,19 @@ def download_scenic_spots():
     csv_writer = csv.writer(text_buffer)
 
     # 写入 CSV 文件的表头
-    header = ['Sport Name', 'Athlete Name', 'Event Date']
+    header = ['Machine Code', 'CPU Cores', 'Logical CPUs', 'CPU Usage', 'Total Memory', 'Used Memory', 'Memory Usage',
+              'Disk Info', 'Device Info', 'IP Address', 'MAC Address']
     csv_writer.writerow(header)
     print(f"Header written: {header}")  # 打印表头是否被写入
 
-    # 遍历所有的景区信息并写入 CSV 文件
-    for index, spot in enumerate(spots):
-        print(f"Writing row {index + 1}: {[spot.sport_name, spot.athlete_name, spot.event_date]}")  # 打印正在写入的数据
-        csv_writer.writerow([spot.sport_name, spot.athlete_name, spot.event_date])
+    # 遍历所有的系统报告信息并写入 CSV 文件
+    for index, report in enumerate(reports):
+        print(
+            f"Writing row {index + 1}: {[report.machine_code, report.cpu_cores, report.logical_cpus, report.cpu_usage, report.total_memory, report.used_memory, report.memory_usage, report.disk_info, report.device_info, report.ip_address, report.mac_address]}")  # 打印正在写入的数据
+        csv_writer.writerow(
+            [report.machine_code, report.cpu_cores, report.logical_cpus, report.cpu_usage, report.total_memory,
+             report.used_memory, report.memory_usage, report.disk_info, report.device_info, report.ip_address,
+             report.mac_address])
 
     # 刷新并关闭文本缓冲区，将数据刷新到 BytesIO 对象中
     text_buffer.detach()
@@ -216,7 +238,7 @@ def download_scenic_spots():
         csv_buffer,
         mimetype='text/csv',
         as_attachment=True,
-        download_name='scenic_spots_data.csv'
+        download_name='system_reports_data.csv'
     )
 
 

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Report Details</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('../static/6a600c338744ebf88de5f3a0cbf9d72a6159a79d.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .card {
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .card-title {
+            font-weight: bold;
+        }
+
+        .btn {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mt-5">{{ report.machine_code }} System Report Details</h1>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Basic Information</h5>
+                <p class="card-text"><strong>Machine Code:</strong> {{ report.machine_code }}</p>
+                <p class="card-text"><strong>CPU Cores:</strong> {{ report.cpu_cores }}</p>
+                <p class="card-text"><strong>Logical CPUs:</strong> {{ report.logical_cpus }}</p>
+                <p class="card-text"><strong>CPU Usage:</strong> {{ report.cpu_usage }}</p>
+                <p class="card-text"><strong>Total Memory:</strong> {{ report.total_memory }}</p>
+                <p class="card-text"><strong>Used Memory:</strong> {{ report.used_memory }}</p>
+                <p class="card-text"><strong>Memory Usage:</strong> {{ report.memory_usage }}</p>
+                <p class="card-text"><strong>Disk Info:</strong> {{ report.disk_info }}</p>
+                <p class="card-text"><strong>Device Info:</strong> {{ report.device_info }}</p>
+                <p class="card-text"><strong>IP Address:</strong> {{ report.ip_address }}</p>
+                <p class="card-text"><strong>MAC Address:</strong> {{ report.mac_address }}</p>
+            </div>
+        </div>
+        <div class="mt-3">
+            <a href="{{ url_for('system_reports') }}" class="btn btn-primary">Back to List</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

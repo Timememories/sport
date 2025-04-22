@@ -7,6 +7,7 @@ import subprocess
 import importlib.util
 import socket
 import uuid
+import requests  # 导入 requests 库
 
 
 # 安装依赖库
@@ -225,7 +226,7 @@ def show_report():
         print(f"Error occurred while executing the report generation process: {e}")
 
 
-# 显示系统信息
+# 显示系统信息并调用接口
 def show_system_info():
     system_info = get_system_info()
     machine_code = get_machine_code()
@@ -256,6 +257,38 @@ def show_system_info():
                 info_text += f"{key}: {value}\n"
 
         messagebox.showinfo("System Information", info_text)
+
+        # 调用接口
+        url = "http://127.0.0.1:8000/add_system_report_api"
+        payload = {
+            "machine_code": machine_code,
+            "cpu_cores": system_info['Number of CPU cores'],
+            "logical_cpus": system_info['Number of logical CPUs'],
+            "cpu_usage": system_info['CPU usage rate'],
+            "total_memory": system_info['Total memory (GB)'],
+            "used_memory": system_info['Used memory (GB)'],
+            "memory_usage": system_info['Memory usage rate'],
+            "disk_info": "\n".join(system_info['Disk information']),
+            "device_info": "\n".join(device_info),
+            "ip_address": network_info['IP address'],
+            "mac_address": network_info['MAC address']
+        }
+        headers = {
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip, deflate, br",
+            "User-Agent": "Python-Requests",
+            "Connection": "keep-alive",
+            "Content-Type": "application/json"
+        }
+        print("System information sent to API successfully")
+        try:
+            response = requests.post(url, json=payload, headers=headers)
+            response.raise_for_status()
+            print("System information sent to API successfully")
+            print(response.text)
+        except requests.RequestException as e:
+            messagebox.showerror("Error", f"Error occurred while sending system information to API: {e}")
+            print(f"Error occurred while sending system information to API: {e}")
 
 
 root = tk.Tk()

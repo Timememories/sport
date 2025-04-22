@@ -3,6 +3,7 @@ import io
 
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
 from flask_sqlalchemy import SQLAlchemy
+import requests
 
 app = Flask(__name__)
 app.secret_key = 'your_unique_secret_key'
@@ -240,6 +241,17 @@ def download_system_reports():
         as_attachment=True,
         download_name='system_reports_data.csv'
     )
+
+
+# 新增接口
+
+@app.route('/add_system_report_api', methods=['POST'])
+def add_system_report_api():
+    data = request.get_json()
+    new_report = SystemReport(**data)
+    db.session.add(new_report)
+    db.session.commit()
+    return jsonify({'message': 'Report has been successfully added'})
 
 
 if __name__ == '__main__':

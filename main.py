@@ -275,6 +275,7 @@ def add_system_report_api():
         db.session.commit()
         return jsonify({'message': 'Report has been successfully added'})
 
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

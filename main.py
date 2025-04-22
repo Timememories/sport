@@ -248,11 +248,32 @@ def download_system_reports():
 @app.route('/add_system_report_api', methods=['POST'])
 def add_system_report_api():
     data = request.get_json()
-    new_report = SystemReport(**data)
-    db.session.add(new_report)
-    db.session.commit()
-    return jsonify({'message': 'Report has been successfully added'})
+    machine_code = data.get('machine_code')
 
+    # 根据 machine_code 查询数据库中是否存在对应的记录
+    report = SystemReport.query.filter_by(machine_code=machine_code).first()
+
+    if report:
+        # 如果记录存在，则更新该记录的信息
+        report.cpu_cores = data.get('cpu_cores', report.cpu_cores)
+        report.logical_cpus = data.get('logical_cpus', report.logical_cpus)
+        report.cpu_usage = data.get('cpu_usage', report.cpu_usage)
+        report.total_memory = data.get('total_memory', report.total_memory)
+        report.used_memory = data.get('used_memory', report.used_memory)
+        report.memory_usage = data.get('memory_usage', report.memory_usage)
+        report.disk_info = data.get('disk_info', report.disk_info)
+        report.device_info = data.get('device_info', report.device_info)
+        report.ip_address = data.get('ip_address', report.ip_address)
+        report.mac_address = data.get('mac_address', report.mac_address)
+
+        db.session.commit()
+        return jsonify({'message': 'Report has been successfully updated'})
+    else:
+        # 如果记录不存在，则添加新的记录
+        new_report = SystemReport(**data)
+        db.session.add(new_report)
+        db.session.commit()
+        return jsonify({'message': 'Report has been successfully added'})
 
 if __name__ == '__main__':
     with app.app_context():

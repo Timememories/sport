@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sport Details</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('../static/6a600c338744ebf88de5f3a0cbf9d72a6159a79d.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        /* Custom table styles, can be adjusted as needed */
+        .table-hover tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+        .action-buttons form {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mt-5">{{ spot.sport_name }} Sport Details</h1>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Basic Information</h5>
+                <p class="card-text"><strong>Appearance Year:</strong> {{ spot.event_date }}</p>
+                <p class="card-text"><strong>Athlete Name:</strong> {{ spot.athlete_name }}</p>
+            </div>
+        </div>
+        <div class="mt-3">
+            <a href="{{ url_for('scenic_spots') }}" class="btn btn-primary">Back to List</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

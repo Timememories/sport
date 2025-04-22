@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sport Management System-Splash</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .splash-content {
+            text-align: center;
+            animation: blink 1s ease-in-out infinite alternate;
+        }
+
+        .name-in-corner {
+            position: fixed;
+            bottom: 300px;
+            right: 500px;
+        }
+
+        @keyframes blink {
+            from {
+                opacity: 0.5;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="splash-content">
+    <h1>Sport Management System</h1>
+</div>
+<div class="name-in-corner">
+    <p>张宇</p>
+    <p>Zhang Yu</p>
+    <p>Чжан Юй</p>
+</div>
+<script>
+    setTimeout(() => {
+        window.location.href = 'http://127.0.0.1:8000/home';
+    }, 5000);
+</script>
+</body>
+
+</html>

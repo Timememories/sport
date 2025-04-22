@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Sport</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('../static/6a600c338744ebf88de5f3a0cbf9d72a6159a79d.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 250.7);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading-spinner {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #3498db;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mt-5">Edit Sport</h1>
+        <form id="editForm" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="sport_name">Sport Name:</label>
+                <input type="text" class="form-control" id="sport_name" name="sport_name" value="{{ spot.sport_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="athlete_name">Athlete Name:</label>
+                <input type="text" class="form-control" id="athlete_name" name="athlete_name" value="{{ spot.athlete_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="event_date">Event Date:</label>
+                <input type="text" class="form-control" id="event_date" name="event_date" value="{{ spot.event_date }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{{ url_for('scenic_spots') }}" class="btn btn-secondary">Back to List</a>
+        </form>
+        <!-- Loading overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <script>
+        // Define previewImage function
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#previewImage').attr('src', e.target.result);
+                    $('#previewImage').show();
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $(document).ready(function () {
+            // Delete photo functionality
+            $("#deletePhotoButton").click(function () {
+                if (confirm('Are you sure you want to delete this photo?')) {
+                    // Clear file input
+                    $("#scenic_photo").val('');
+                    // Hide displayed photo and delete button
+                    $("#photoPreviewContainer img").hide();
+                    $(this).hide();
+                    // Hide preview image
+                    $("#previewImage").hide();
+                }
+            });
+
+            // Form submission handling
+            $("#editForm").submit(function (e) {
+                e.preventDefault();
+                // Detailed form validation
+                var spotName = $("#spot_name").val();
+                var location = $("#location").val();
+                var appearanceYear = $("#appearance_year").val();
+                if (spotName === '' || location === '' || appearanceYear === '') {
+                    alert('Please fill in all required fields!');
+                    return;
+                }
+                // Show loading state
+                $("#loadingOverlay").show();
+                // Submit form using AJAX
+                $.ajax({
+                    url: '/edit_scenic_spot/{{ spot.id }}',
+                    type: 'POST',
+                    data: new FormData(this),
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        // Handle successful response
+                        console.log(response);
+                        $("#loadingOverlay").hide();
+                        alert('Saved successfully!');
+                        // Redirect to list page
+                        window.location.href = "{{ url_for('scenic_spots') }}";
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        console.error(error);
+                        $("#loadingOverlay").hide();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

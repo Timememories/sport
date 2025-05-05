@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,13 +12,11 @@
             background-repeat: no-repeat;
             background-attachment: fixed;
         }
-
         .search-container {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
         }
-
         .search-input {
             border: 1px solid #ccc;
             border-radius: 20px 0 0 20px;
@@ -28,11 +25,7 @@
             outline: none;
             transition: border-color 0.3s ease;
         }
-
-        .search-input:focus {
-            border-color: #007bff;
-        }
-
+        .search-input:focus { border-color: #007bff;}
         .search-button {
             background-color: #007bff;
             color: #fff;
@@ -42,19 +35,9 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
             text-align: center;
-            /* Center the button text */
         }
-
-        .search-button:hover {
-            background-color: #0056b3;
-        }
-
-
-        /* Custom table styles, can be adjusted as needed */
-        .table-hover tbody tr:hover {
-            background-color: #f5f5f5;
-        }
-
+        .search-button:hover {background-color: #0056b3;}
+        .table-hover tbody tr:hover {background-color: #f5f5f5;}
         .action-buttons {
             display: flex;
             gap: 10px;
@@ -63,43 +46,19 @@
             align-items: center;
 
         }
-
-        .action-buttons form {
-            margin-bottom: 0;
-        }
-
+        .action-buttons form {margin-bottom: 0;}
         .action-buttons form button,
-        .action-buttons a {
-            text-align: center;
-            /* Center the text in action buttons */
-            padding: 10px 15px;
-        }
-
-        .table {
-            border-color: #000;
-            /* Set table border color to black */
-        }
-
+        .action-buttons a {text-align: center;padding: 10px 15px;}
+        .table {border-color: #000;}
         .table-bordered td,
-        .table-bordered th {
-            border: 1px solid #000000;
-        }
-
-        .table thead th {
-            vertical-align: bottom;
-            border-bottom: 2px solid #000000;
-        }
-
-
-        /* Search toast styles */
+        .table-bordered th {border: 1px solid #000000;}
+        .table thead th {vertical-align: bottom;border-bottom: 2px solid #000000;}
         .search-toast {
             position: fixed;
             left: 50%;
             top: 10px;
             transform: translateX(-50%);
-            /*background-color: rgba(255, 255, 255, 0.8);!* Semi-transparent white background *!*/
             background-color: transparent;
-            /* Fully transparent */
             border: 1px solid #ccc;
             padding: 10px 20px;
             border-radius: 5px;
@@ -110,217 +69,124 @@
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <h1 class="mt-5">System Information Reports</h1>
-        <!-- Search bar -->
-        <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search for machine codes" id="searchInput">
-            <div class="input-group-append">
-                <button class="search-button btn btn-outline-secondary" type="button" id="searchButton">Search</button>
-            </div>
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addSystemReportModal">
-                Add System Report
-            </button>
-            <!-- Add download button -->
-            <button type="button" class="btn btn-info" onclick="downloadData()">Download Data</button>
+<div class="container">
+    <h1 class="mt-5">System Information Reports</h1>
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search for machine codes" id="searchInput">
+        <div class="input-group-append">
+            <button class="search-button btn btn-outline-secondary" type="button" id="searchButton">Search</button>
         </div>
-        <!-- Add system report button -->
-        <table class="table table-striped table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>
-                        <a href="{{ url_for('system_reports', sort_by='machine_code', sort_order='asc' if sort_by!='machine_code' or sort_order=='desc' else 'desc') }}">Machine
-                            Code</a>
-                    </th>
-                    <th>
-                        <a href="{{ url_for('system_reports', sort_by='cpu_cores', sort_order='asc' if sort_by!='cpu_cores' or sort_order=='desc' else 'desc') }}">CPU
-                            Cores</a>
-                    </th>
-                    <th>
-                        <a href="{{ url_for('system_reports', sort_by='logical_cpus', sort_order='asc' if sort_by!='logical_cpus' or sort_order=='desc' else 'desc') }}">Logical
-                            CPUs</a>
-                    </th>
-                    <th>
-                        <a href="{{ url_for('system_reports', sort_by='cpu_usage', sort_order='asc' if sort_by!='cpu_usage' or sort_order=='desc' else 'desc') }}">CPU
-                            Usage</a>
-                    </th>
-                    <th>
-                        <a href="{{ url_for('system_reports', sort_by='total_memory', sort_order='asc' if sort_by!='total_memory' or sort_order=='desc' else 'desc') }}">Total
-                            Memory</a>
-                    </th>
-                    <th>
-                        <a href="{{ url_for('system_reports', sort_by='used_memory', sort_order='asc' if sort_by!='used_memory' or sort_order=='desc' else 'desc') }}">Used
-                            Memory</a>
-                    </th>
-                    <th>
-                        <a href="{{ url_for('system_reports', sort_by='memory_usage', sort_order='asc' if sort_by!='memory_usage' or sort_order=='desc' else 'desc') }}">Memory
-                            Usage</a>
-                    </th>
-                    <th>
-                        <a href="{{ url_for('system_reports', sort_by='disk_info', sort_order='asc' if sort_by!='disk_info' or sort_order=='desc' else 'desc') }}">Disk
-                            Info</a>
-                    </th>
-                    <th>
-                        <a href="{{ url_for('system_reports', sort_by='device_info', sort_order='asc' if sort_by!='device_info' or sort_order=='desc' else 'desc') }}">Device
-                            Info</a>
-                    </th>
-                    <th>
-                        <a href="{{ url_for('system_reports', sort_by='ip_address', sort_order='asc' if sort_by!='ip_address' or sort_order=='desc' else 'desc') }}">IP
-                            Address</a>
-                    </th>
-                    <th>
-                        <a href="{{ url_for('system_reports', sort_by='mac_address', sort_order='asc' if sort_by!='mac_address' or sort_order=='desc' else 'desc') }}">MAC
-                            Address</a>
-                    </th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="systemReportsTableBody">
-                {% for report in reports %}
-                <tr data-report-machine-code="{{ report.machine_code }}">
-                    <td>{{ report.machine_code }}</td>
-                    <td>{{ report.cpu_cores }}</td>
-                    <td>{{ report.logical_cpus }}</td>
-                    <td>{{ report.cpu_usage }}</td>
-                    <td>{{ report.total_memory }}</td>
-                    <td>{{ report.used_memory }}</td>
-                    <td>{{ report.memory_usage }}</td>
-                    <td>{{ report.disk_info }}</td>
-                    <td>{{ report.device_info }}</td>
-                    <td>{{ report.ip_address }}</td>
-                    <td>{{ report.mac_address }}</td>
-                    <td class="action-buttons">
-                        <form method="post" action="{{ url_for('system_reports') }}" class="delete-form">
-                            <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="report_id" value="{{ report.id }}">
-                            <button type="submit" class="btn btn-danger">Delete
-                            </button>
-                        </form>
-                        <a href="{{ url_for('edit_system_report', id=report.id) }}" class="btn btn-primary btn-sm">Edit</a>
-                        <!-- Add view details button -->
-                        <a href="{{ url_for('view_system_report_details', id=report.id) }}" class="btn btn-info btn-sm">Details</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <div class="search-toast" id="searchResultTip">
-            Not Found
-        </div>
+        <button type="button" class="btn btn-info" onclick="downloadData()">Download Data</button>
     </div>
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>
+                <a href="{{ url_for('system_reports', sort_by='machine_code', sort_order='asc' if sort_by!='machine_code' or sort_order=='desc' else 'desc') }}">Machine
+                    Code</a>
+            </th>
+            <th>
+                <a href="{{ url_for('system_reports', sort_by='cpu_cores', sort_order='asc' if sort_by!='cpu_cores' or sort_order=='desc' else 'desc') }}">CPU
+                    Cores</a>
+            </th>
+            <th>
+                <a href="{{ url_for('system_reports', sort_by='logical_cpus', sort_order='asc' if sort_by!='logical_cpus' or sort_order=='desc' else 'desc') }}">Logical
+                    CPUs</a>
+            </th>
+            <th>
+                <a href="{{ url_for('system_reports', sort_by='cpu_usage', sort_order='asc' if sort_by!='cpu_usage' or sort_order=='desc' else 'desc') }}">CPU
+                    Usage</a>
+            </th>
+            <th>
+                <a href="{{ url_for('system_reports', sort_by='total_memory', sort_order='asc' if sort_by!='total_memory' or sort_order=='desc' else 'desc') }}">Total
+                    Memory</a>
+            </th>
+            <th>
+                <a href="{{ url_for('system_reports', sort_by='used_memory', sort_order='asc' if sort_by!='used_memory' or sort_order=='desc' else 'desc') }}">Used
+                    Memory</a>
+            </th>
+            <th>
+                <a href="{{ url_for('system_reports', sort_by='memory_usage', sort_order='asc' if sort_by!='memory_usage' or sort_order=='desc' else 'desc') }}">Memory
+                    Usage</a>
+            </th>
+            <th>
+                <a href="{{ url_for('system_reports', sort_by='disk_info', sort_order='asc' if sort_by!='disk_info' or sort_order=='desc' else 'desc') }}">Disk
+                    Info</a>
+            </th>
+            <th>
+                <a href="{{ url_for('system_reports', sort_by='device_info', sort_order='asc' if sort_by!='device_info' or sort_order=='desc' else 'desc') }}">Device
+                    Info</a>
+            </th>
+            <th><a href="{{ url_for('system_reports', sort_by='ip_address', sort_order='asc' if sort_by!='ip_address' or sort_order=='desc' else 'desc') }}">IP Address</a>
+            </th>
+            <th><a href="{{ url_for('system_reports', sort_by='mac_address', sort_order='asc' if sort_by!='mac_address' or sort_order=='desc' else 'desc') }}">MAC Address</a>
+            </th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="systemReportsTableBody">
+        {% for report in reports %}
+            <tr data-report-machine-code="{{ report.machine_code }}">
+                <td>{{ report.machine_code }}</td>
+                <td>{{ report.cpu_cores }}</td>
+                <td>{{ report.logical_cpus }}</td>
+                <td>{{ report.cpu_usage }}</td>
+                <td>{{ report.total_memory }}</td>
+                <td>{{ report.used_memory }}</td>
+                <td>{{ report.memory_usage }}</td>
+                <td>{{ report.disk_info }}</td>
+                <td>{{ report.device_info }}</td>
+                <td>{{ report.ip_address }}</td>
+                <td>{{ report.mac_address }}</td>
+                <td class="action-buttons">
+                    <form method="post" action="{{ url_for('system_reports') }}" class="delete-form">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="report_id" value="{{ report.id }}">
+                        <button type="submit" class="btn btn-danger">Delete
+                        </button>
+                    </form>
+                    <a href="{{ url_for('edit_system_report', id=report.id) }}" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="{{ url_for('view_system_report_details', id=report.id) }}" class="btn btn-info btn-sm">Details</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-    <!-- Add system report modal -->
-    <div class="modal fade" id="addSystemReportModal" tabindex="-1" role="modal" aria-labelledby="addSystemReportModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addSystemReportModalLabel">Add System Report</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form method="post" action="{{ url_for('add_system_report') }}" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="machine_code">Machine Code:</label>
-                            <input type="text" class="form-control" id="machine_code" name="machine_code" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="cpu_cores">CPU Cores:</label>
-                            <input type="number" class="form-control" id="cpu_cores" name="cpu_cores" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="logical_cpus">Logical CPUs:</label>
-                            <input type="number" class="form-control" id="logical_cpus" name="logical_cpus" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="cpu_usage">CPU Usage:</label>
-                            <input type="text" class="form-control" id="cpu_usage" name="cpu_usage" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="total_memory">Total Memory:</label>
-                            <input type="text" class="form-control" id="total_memory" name="total_memory" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="used_memory">Used Memory:</label>
-                            <input type="text" class="form-control" id="used_memory" name="used_memory" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="memory_usage">Memory Usage:</label>
-                            <input type="text" class="form-control" id="memory_usage" name="memory_usage" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="disk_info">Disk Info:</label>
-                            <textarea class="form-control" id="disk_info" name="disk_info" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="device_info">Device Info:</label>
-                            <textarea class="form-control" id="device_info" name="device_info" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="ip_address">IP Address:</label>
-                            <input type="text" class="form-control" id="ip_address" name="ip_address" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="mac_address">MAC Address:</label>
-                            <input type="text" class="form-control" id="mac_address" name="mac_address" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        function downloadData() {
-            window.location.href = "{{ url_for('download_system_reports') }}";
-        }
-
-        // Optimize delete operation using event delegation
-        $(document).ready(function () {
-            $('.delete-form').submit(function (event) {
-                if (!confirm('Are you sure you want to delete this report?')) {
-                    event.preventDefault();
-                }
-            });
-
-            // Search functionality
-            $('#searchButton').click(function () {
-                const searchText = $('#searchInput').val().toLowerCase();
-                let found = false;
-                $('#systemReportsTableBody tr').each(function () {
-                    const reportMachineCode = $(this).data('report-machine-code');
-                    if (typeof reportMachineCode === 'string' && reportMachineCode.length > 0 && reportMachineCode.toLowerCase().includes(searchText)) {
-                        $(this).show();
-                        found = true;
-                    } else {
-                        $(this).hide();
-                    }
-                });
-                if (!found) {
-                    // Show search toast
-                    $('#searchResultTip').show();
-                    // Hide search toast after 5 seconds
-                    setTimeout(function () {
-                        $('#searchResultTip').hide();
-                    }, 5000);
-                } else {
-                    $('#searchResultTip').hide();
-                }
-            });
+    <div class="search-toast" id="searchResultTip">Not Found</div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    function downloadData() {window.location.href = "{{ url_for('download_system_reports') }}";}
+    $(document).ready(function () {
+        $('.delete-form').submit(function (event) {
+            if (!confirm('Are you sure you want to delete this report?')) {event.preventDefault();}
         });
-    </script>
+        $('#searchButton').click(function () {
+            const searchText = $('#searchInput').val().toLowerCase();
+            let found = false;
+            $('#systemReportsTableBody tr').each(function () {
+                const reportMachineCode = $(this).data('report-machine-code');
+                if (typeof reportMachineCode === 'string' && reportMachineCode.length > 0 && reportMachineCode.toLowerCase().includes(searchText)) {
+                    $(this).show();
+                    found = true;
+                } else {
+                    $(this).hide();
+                }
+            });
+            if (!found) {
+                $('#searchResultTip').show();
+                setTimeout(function () {
+                    $('#searchResultTip').hide();
+                }, 5000);
+            } else {
+                $('#searchResultTip').hide();
+            }
+        });
+    });
+</script>
 </body>
-
 </html>

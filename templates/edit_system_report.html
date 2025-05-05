@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,9 +12,7 @@
             background-repeat: no-repeat;
             background-attachment: fixed;
         }
-        .form-group {
-            margin-bottom: 20px;
-        }
+        .form-group {margin-bottom: 20px;}
         .loading-overlay {
             display: none;
             position: fixed;
@@ -36,10 +33,7 @@
             height: 120px;
             animation: spin 2s linear infinite;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin {0% { transform: rotate(0deg); }100% { transform: rotate(360deg); }}
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
@@ -97,28 +91,18 @@
             <button type="submit" class="btn btn-primary">Save</button>
             <a href="{{ url_for('system_reports') }}" class="btn btn-secondary">Back to List</a>
         </form>
-        <!-- Loading overlay -->
-        <div class="loading-overlay" id="loadingOverlay">
-            <div class="loading-spinner"></div>
-        </div>
+        <div class="loading-overlay" id="loadingOverlay"><div class="loading-spinner"></div></div>
     </div>
-
     <script>
         $(document).ready(function () {
-            // Form submission handling
             $("#editForm").submit(function (e) {
                 e.preventDefault();
-                // Detailed form validation
                 var machineCode = $("#machine_code").val();
                 var cpuCores = $("#cpu_cores").val();
                 var logicalCpus = $("#logical_cpus").val();
                 if (machineCode === '' || cpuCores === '' || logicalCpus === '') {
-                    alert('Please fill in all required fields!');
-                    return;
-                }
-                // Show loading state
+                    alert('Please fill in all required fields!');return;}
                 $("#loadingOverlay").show();
-                // Submit form using AJAX
                 $.ajax({
                     url: '/edit_system_report/{{ report.id }}',
                     type: 'POST',
@@ -126,15 +110,12 @@
                     contentType: false,
                     processData: false,
                     success: function (response) {
-                        // Handle successful response
                         console.log(response);
                         $("#loadingOverlay").hide();
                         alert('Saved successfully!');
-                        // Redirect to list page
                         window.location.href = "{{ url_for('system_reports') }}";
                     },
                     error: function (xhr, status, error) {
-                        // Handle error
                         console.error(error);
                         $("#loadingOverlay").hide();
                     }
@@ -143,5 +124,4 @@
         });
     </script>
 </body>
-
 </html>

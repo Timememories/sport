@@ -70,41 +70,6 @@ def system_reports():
     return render_template('system_reports.html', reports=reports, sort_by=sort_by, sort_order=sort_order)
 
 
-@app.route('/add_system_report', methods=['GET', 'POST'])
-def add_system_report():
-    if request.method == 'POST':
-        new_machine_code = request.form.get('machine_code')
-        new_cpu_cores = request.form.get('cpu_cores')
-        new_logical_cpus = request.form.get('logical_cpus')
-        new_cpu_usage = request.form.get('cpu_usage')
-        new_total_memory = request.form.get('total_memory')
-        new_used_memory = request.form.get('used_memory')
-        new_memory_usage = request.form.get('memory_usage')
-        new_disk_info = request.form.get('disk_info')
-        new_device_info = request.form.get('device_info')
-        new_ip_address = request.form.get('ip_address')
-        new_mac_address = request.form.get('mac_address')
-
-        new_report = SystemReport(
-            machine_code=new_machine_code,
-            cpu_cores=new_cpu_cores,
-            logical_cpus=new_logical_cpus,
-            cpu_usage=new_cpu_usage,
-            total_memory=new_total_memory,
-            used_memory=new_used_memory,
-            memory_usage=new_memory_usage,
-            disk_info=new_disk_info,
-            device_info=new_device_info,
-            ip_address=new_ip_address,
-            mac_address=new_mac_address
-        )
-        db.session.add(new_report)
-        db.session.commit()
-        flash('Report has been successfully added')
-        return redirect(url_for('system_reports'))
-    return render_template('add_system_report.html')
-
-
 @app.route('/edit_system_report/<int:id>', methods=['GET', 'POST'])
 def edit_system_report(id):
     report = SystemReport.query.get_or_404(id)
